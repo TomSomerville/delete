@@ -4,7 +4,7 @@ if (!(Test-Path $wp)) {
 }
 
 function query(){
-    $query = Resolve-DnsName -Type TXT -Name grrcon.thomassomerville.com
+    $query = Resolve-DnsName -Type TXT -Name down.thomassomerville.com
     $results = $query.strings -split ","
     $address = $results[0]
     $port = $results[1]
