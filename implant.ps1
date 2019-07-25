@@ -37,6 +37,7 @@ function sendData($datatosend) {
 While ($True){
     Start-Sleep -s 5
     query
+    Start-Sleep -s 1
     runcommand
 }
 
